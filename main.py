@@ -1,13 +1,18 @@
 from threading import Thread
 from telegram.ext import filters, MessageHandler, ApplicationBuilder, CommandHandler
+from os import path as osPath
 
 import commons
 from tgBot import start, notFound, sub, unsub
 from webhook import runLoop
 from conf import BOT_TOKEN
 
+def createIfNotFound(filename:str):
+    if not osPath.exists(filename):
+        with open(filename, "w"): pass
 
 if __name__ == "__main__":
+    [createIfNotFound(f) for f in {"subs.txt", "last.txt"}]
     commons.subs = commons.Subs()
     tgBot = ApplicationBuilder().token(BOT_TOKEN).build()
     commons.tgBot = tgBot.bot
