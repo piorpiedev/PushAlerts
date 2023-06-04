@@ -14,7 +14,8 @@ def isSubbed(update: Update):
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await reply("Hello there! " + ("Sei già iscritto, scrivi /unsub se vuoi disiscriverti" if isSubbed(update) else "Scrivi /sub per iscriverti"), update, context)
+    await reply("Hello there! " + ("Sei già iscritto, scrivi /unsub se vuoi disiscriverti" if isSubbed(update) else "Scrivi /sub per iscriverti") + 
+        "\n\n" + len(commons.subs.subs) + " iscritti!", update, context)
 
 
 async def sub(update: Update, context: ContextTypes.DEFAULT_TYPE):
