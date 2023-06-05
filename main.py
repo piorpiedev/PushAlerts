@@ -12,7 +12,7 @@ def createIfNotFound(filename:str):
         with open(filename, "w"): pass
 
 if __name__ == "__main__":
-    [createIfNotFound(f) for f in {"subs.txt", "last.txt"}]
+    {createIfNotFound(f) for f in {"subs.txt", "last.txt"}}
     commons.subs = commons.Subs()
     tgBot = ApplicationBuilder().token(BOT_TOKEN).build()
     commons.tgBot = tgBot.bot
