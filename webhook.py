@@ -1,10 +1,10 @@
 from re import search
-from requests import get
+from requests import get, post
 from time import sleep
 import asyncio
 
 import commons
-from conf import BASE_URL
+from conf import BASE_URL, BOT_TOKEN
 
 class LastId:
     def __init__(self):
@@ -26,15 +26,15 @@ def getLastId(raw:str):
 def getLastHmtl(raw:str):
     return f"<a href=\"{BASE_URL}/" + search(r'<a href="(visualizzaCircolare\.php\?ID_circolare=.*?">.*?<\/a>)', raw).groups()[0]
 
+def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""):
+    return post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode={parse_mode}")
 
 async def sendAlert(newId:str, lastHmtl:str):
     print(f"Nuova circolare! ({newId})")
     for userId in commons.subs.subs:
-        try:
-            await commons.tgBot.send_message(int(userId), 
-                f"Nuova circolare! ({newId})\n\n{lastHmtl}", parse_mode="HTML")
-            await asyncio.sleep(1)
+        try: sendAPIMsg(userId, f"Nuova circolare! ({newId})\n\n{lastHmtl}", "HTML")
         except: pass
+        sleep(.5)
 
 def runLoop():
     lastId = LastId()
