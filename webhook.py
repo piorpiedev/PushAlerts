@@ -33,6 +33,7 @@ async def sendAlert(newId:str, lastHmtl:str):
         try:
             await commons.tgBot.send_message(int(userId), 
                 f"Nuova circolare! ({newId})\n\n{lastHmtl}", parse_mode="HTML")
+            await asyncio.sleep(3)
         except: pass
 
 def runLoop():
