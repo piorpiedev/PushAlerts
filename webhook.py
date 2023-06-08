@@ -24,7 +24,8 @@ def getLastId(raw:str):
     return search(r"<tbody(?:| )>(?:\n.*?)+<tr><td>(\d+)", raw).groups()[0]
 
 def getLastHmtl(raw:str):
-    return f"<a href=\"{BASE_URL}/" + search(r'<a href="(visualizzaCircolare\.php\?ID_circolare=.*?">.*?<\/a>)', raw).groups()[0]
+    r = search(r"<\/td><td(?:>(.*?)| class=\"sopra\">(<a href=\"visualizzaCircolare\.php\?ID_circolare=.*?\">.*?<\/a>))<\/td>", raw, flags=16).groups()[-1]
+    return "<a href=\"" + BASE_URL + "/" + r[9:] if r.startswith("<a href=\"visualizzaCircolare.php?") else r
 
 def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""):
     return post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode={parse_mode}")
