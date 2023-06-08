@@ -25,4 +25,4 @@ if __name__ == "__main__":
     
     # Run loop and bot
     Thread(target=runLoop, daemon=True).start()
-    tgBot.run_polling(timeout=600, drop_pending_updates=True)
+    tgBot.run_polling(drop_pending_updates=True)
