@@ -30,8 +30,8 @@ def getLastHmtl(raw:str):
         search(r"<\/td><td(?:>(.*?)| class=\"sopra\">(<a href=\"visualizzaCircolare\.php\?ID_circolare=.*?\">.*?<\/a>))<\/td>", raw, flags=16).groups()) if x)
     return "<a href=\"" + BASE_URL + "/" + r[9:] if r and r.startswith("<a href=\"visualizzaCircolare.php?") else r
 
-def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""): #TODO: Bring back the actual library method
-    return post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode={parse_mode}")
+def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""):
+    return post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage", json={"chat_id": chat_id, "text": msg, "parse_mode": parse_mode})
 
 async def sendAlert(newId:str, lastHmtl:str):
     print(f"Nuova circolare! ({newId})")
@@ -46,7 +46,10 @@ def runLoop():
     
     while 1:
         try:
-            r = get(BASE_URL + "/visCircolari.php").text
+            res = get(BASE_URL + "/visCircolari.php")
+            res.encoding = res.apparent_encoding
+            r = res.text
+            
             newId = getLastId(r)
             if newId != lastId.lastId:        
                 lastId.update(newId)
