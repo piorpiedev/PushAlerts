@@ -1,5 +1,6 @@
 from re import search
 from requests import get, post
+from requests.exceptions import ConnectionError
 from time import sleep
 import asyncio
 
@@ -29,7 +30,7 @@ def getLastHmtl(raw:str):
         search(r"<\/td><td(?:>(.*?)| class=\"sopra\">(<a href=\"visualizzaCircolare\.php\?ID_circolare=.*?\">.*?<\/a>))<\/td>", raw, flags=16).groups()) if x)
     return "<a href=\"" + BASE_URL + "/" + r[9:] if r and r.startswith("<a href=\"visualizzaCircolare.php?") else r
 
-def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""):
+def sendAPIMsg(chat_id:str, msg:str, parse_mode = ""): #TODO: Bring back the actual library method
     return post(f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={chat_id}&text={msg}&parse_mode={parse_mode}")
 
 async def sendAlert(newId:str, lastHmtl:str):
@@ -50,6 +51,8 @@ def runLoop():
             if newId != lastId.lastId:        
                 lastId.update(newId)
                 asyncio.run(sendAlert(newId, getLastHmtl(r)))
+            sleep(300)
         except Exception as e:
-            print("Exception in the \"webhook\" loop: " + str(e))
-        sleep(300)
+            connectionError = type(e) == ConnectionError
+            print("[ERROR] Exception in the \"webhook\" loop: " + ("No internet connection" if connectionError else str(e)))
+            sleep(10 if connectionError else 100)
