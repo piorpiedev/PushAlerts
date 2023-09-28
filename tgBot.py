@@ -14,7 +14,6 @@ def isSubbed(update: Update):
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print(update.message.id)
     firstMsg = update.message.id == 1
     if firstMsg: commons.subs.sub(getUserId(update))
 
