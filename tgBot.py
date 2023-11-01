@@ -1,4 +1,5 @@
 from telegram import Update
+from telegram.constants import ChatType
 from telegram.ext import ContextTypes
 
 import commons
@@ -40,4 +41,5 @@ async def unsub(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await reply("Non sei già iscritto! Scrivi /sub per iscriverti e venire avvisato ogni volta che esce una circolare", update, context)
 
 async def notFound(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await reply("Mi spiace ma conosco solo i comandi /start, /sub e /unsub :(", update, context)
+    if update.effective_chat.type == ChatType.PRIVATE:
+       await reply("Mi spiace ma conosco solo i comandi /start, /sub e /unsub :(", update, context)
