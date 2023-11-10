@@ -9,6 +9,7 @@ from tgBot import start, notFound, sub, unsub
 from webhook import runLoop
 from conf import BOT_TOKEN
 
+
 if __name__ == "__main__":
     for f in {"subs.txt", "last.txt"}:
         if not osPath.exists(f):
