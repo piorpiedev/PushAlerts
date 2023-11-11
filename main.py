@@ -16,7 +16,6 @@ def processRows(rows:list[str]):
 
 
 def sendMsg(num:int, content:str):
-    # Send msg via the Telegram API
     resp = tgApi.sendMessage(f"Nuova circolare! ({num})\n\n{content}")
     if not resp: return
 
@@ -24,14 +23,12 @@ def sendMsg(num:int, content:str):
     print("SEND", (num, content))
 
 def deleteMsg(num:int):
-    # Send API request to delete msg from channel
     if not tgApi.deleteMessage(db.getMsgId(num)): return
 
     db.deleteMsg(num)
     print("DELETE", num)
 
 def editMsg(num:int, msgId:int, content:str):
-    # Send msg via the Telegram API
     if not tgApi.editMessage(msgId, f"Nuova circolare! ({num})\n\n{content}"): return
 
     db.editMsg(num, content)
