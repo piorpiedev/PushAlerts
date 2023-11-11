@@ -102,7 +102,7 @@ if __name__ == "__main__":
                     editMsg(num, oldMsg[0], content, attachments) # The link changes every time you reload the page. I have no words
         
             currentTime = perf_counter()
-            print(f"[INFO] Sync completed in {str(round(currentTime - oldTime, 2)).rjust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
+            print(f"[INFO] Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
             sleep(CHECK_EVERY)
         except ConnectionError as e:
             print("[ERROR] No internet connection. Retrying in 10s..")
