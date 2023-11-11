@@ -3,7 +3,10 @@ This is a simple program to scan for updates on a very specific website, that i 
 
 ## Todos:
 - Send a message when another msg is updated (EDIT event), and delete it after an x amount of time, or when it gets edited again
+
+## Maybes:
 - Make the whole think async. Not really necessary, just a nice addiction to have
+- Instead of using a local db, just get the channel messages. Its probably worse for performances, but can be useful to make sure that the channel is actually synced
 
 ## Updates over v1
 - At every update the rows are confronted with the stored ones, and in case of changes, they are updated on the local db and the Telegram Channel.
