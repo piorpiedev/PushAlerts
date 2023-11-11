@@ -95,7 +95,7 @@ if __name__ == "__main__":
                     editMsg(num, oldMsg[0], content) 
         
             currentTime = perf_counter()
-            logging.info(f"Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
+            logging.debug(f"Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
             sleep(CHECK_EVERY)
         except ConnectionError as e:
             logging.warning("No internet connection. Retrying in 10s..")
