@@ -2,6 +2,7 @@
 This is a simple program to scan for updates on a very specific website, that i won't talk about, and sync them with a Telegram channel
 
 ## Todos:
+- Send a message when another msg is updated (EDIT event), and delete it after an x amount of time, or when it gets edited again
 - Make the whole think async. Not really necessary, just a nice addiction to have
 
 ## Updates over v1
