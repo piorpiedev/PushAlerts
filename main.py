@@ -20,28 +20,23 @@ def sendMsg(num:int, content:str):
     resp = tgApi.sendMessage(f"Nuova circolare! ({num})\n\n{content}")
     if not resp: return
 
-    # Add row to the db
     db.addMsg(num, resp["result"]["message_id"], content)
-    
     print("SEND", (num, content))
 
 def deleteMsg(num:int):
     # Send API request to delete msg from channel
     if not tgApi.deleteMessage(db.getMsgId(num)): return
 
-    # Delete row from db
     db.deleteMsg(num)
-    
     print("DELETE", num)
 
 def editMsg(num:int, msgId:int, content:str):
     # Send msg via the Telegram API
     if not tgApi.editMessage(msgId, f"Nuova circolare! ({num})\n\n{content}"): return
 
-    # Update row in the db
     db.editMsg(num, content)
-
     print("EDIT", (num, content))
+
 
 
 #TODO: Make the whole thing async
