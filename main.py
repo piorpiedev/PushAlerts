@@ -1,7 +1,8 @@
 from requests import get
-from conf import BASE_URL
+from conf import BASE_URL, CHECK_EVERY
 import tgApi
 from db import Database
+from time import sleep
 
 db = Database("data.db", "schema.sql")
 
@@ -75,3 +76,5 @@ if __name__ == "__main__":
             if oldMsg[1] != content: # The msg content has been changed
                 if not (oldMsg[1].startswith(href) and content.startswith(href) and oldMsg[1].split('=">', 1)[1] == content.split('=">', 1)[1]):
                     editMsg(num, oldMsg[0], content) # The link changes every time you reload the page. I have no words
+        
+        sleep(CHECK_EVERY)
