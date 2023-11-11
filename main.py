@@ -4,13 +4,14 @@ from conf import BASE_URL, CHECK_EVERY
 import tgApi
 from db import Database
 from time import sleep, perf_counter
+import logging
 
 db = Database("data.db", "schema.sql")
 url = BASE_URL + "/visualizzaCircolare.php"
 baseHref = '<a href="'
 href = baseHref + BASE_URL + "/"
 hrefView = baseHref + url
-
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="[%H:%M:%S]")
 
 def isUrl(s:str):
     return s.startswith("http://") or s.startswith("https://")
@@ -43,26 +44,26 @@ def sendMsg(num:int, content:str):
     if not resp: return
 
     db.addMsg(num, resp["result"]["message_id"], content)
-    print("[LOOP] SEND", (num, content))
+    logging.info(f"SEND {(num, content)}")
 
 def deleteMsg(num:int):
     if not tgApi.deleteMessage(db.getMsgId(num)): return
 
     db.deleteMsg(num)
-    print("[LOOP] DELETE", num)
+    logging.info(f"DELETE {num}")
 
 def editMsg(num:int, msgId:int, content:str):
     if not tgApi.editMessage(msgId, f"Nuova circolare! ({num})\n\n{content}"): return
 
     db.editMsg(num, content)
-    print("[LOOP] EDIT", (num, content))
+    logging.info(f"EDIT {(num, content)}")
 
 
 
 if __name__ == "__main__":
     while 1:
         try:
-            print("[INFO] Running sync..")
+            logging.debug("Running sync..")
             oldTime = perf_counter() 
             res = get(BASE_URL + "/visCircolari.php")
             res.encoding = res.apparent_encoding
@@ -94,8 +95,8 @@ if __name__ == "__main__":
                     editMsg(num, oldMsg[0], content) 
         
             currentTime = perf_counter()
-            print(f"[INFO] Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
+            logging.info(f"Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
             sleep(CHECK_EVERY)
         except ConnectionError as e:
-            print("[ERROR] No internet connection. Retrying in 10s..")
+            logging.warning("No internet connection. Retrying in 10s..")
             sleep(10)

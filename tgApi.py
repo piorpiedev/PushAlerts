@@ -1,6 +1,7 @@
 from conf import BOT_TOKEN, CHANNEL_ID
 from requests import post
 from time import sleep
+import logging
 
 baseUrl = f"https://api.telegram.org/bot{BOT_TOKEN}/"
 
@@ -21,16 +22,16 @@ def checkResp(func, args:tuple, scope:str, info:str):
             if not resp["ok"]: 
                 if resp["error_code"] == 429:
                     time = resp["parameters"]["retry_after"]
-                    print(f"[RATE LIMITED] Unable to {scope} ({time}s)")
+                    logging.warning(f"(RATE LIMITED) Unable to {scope} ({time}s)")
                     sleep(time)
                     continue
                 else: 
-                    print("[ERROR] Unable to", scope, info)
+                    logging.error("Unable to", scope, info)
                     return False
             else: 
                 return resp
         except: 
-            print("[ERROR] Unable to", scope, info)
+            logging.error("Unable to", scope, info)
             return False
 
 
