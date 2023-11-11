@@ -1,5 +1,4 @@
 # PushAlerts
-
 This is a simple program to scan for updates on a very specific website, that i won't talk about, and sync them with a Telegram channel
 
 ## Todos:
