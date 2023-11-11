@@ -15,13 +15,6 @@ hrefView = baseHref + url
 def isUrl(s:str):
     return s.startswith("http://") or s.startswith("https://")
 
-def urlSafeDifferent(s1:str, s2:str):
-    return s1 != s2 and not (s1.startswith(hrefView) and s2.startswith(hrefView) and s1.split('=">', 1)[1] == s2.split('=">', 1)[1])
-
-#formatMgs = lambda num, content, attachments: f"Nuova circolare! ({num})\n\n{content}" + (f"\n\nAttachments: {attachments}" if attachments else "")
-def formatMgs(num, content, attachments): 
-    return f"Nuova circolare! ({num})\n\n{content}" + (f"\n\nAttachments:\n{attachments}" if attachments else "")
-
 
 def processRows(rows:list[str]):
     for row in rows:
@@ -42,15 +35,15 @@ def processRows(rows:list[str]):
             elif not isUrl(attachment):
                 del attachments[i]
         
-        yield num, t[0], None if len(attachments) == 0 else (" • " + "\n • ".join(attachments))
+        yield num, t[0] if len(attachments) == 0 else (t[0] + "\n\nAttachments:\n • " + "\n • ".join(attachments))
 
 
-def sendMsg(num:int, content:str, attachments:str):
-    resp = tgApi.sendMessage(formatMgs(num, content, attachments))
+def sendMsg(num:int, content:str):
+    resp = tgApi.sendMessage(f"Nuova circolare! ({num})\n\n{content}")
     if not resp: return
 
-    db.addMsg(num, resp["result"]["message_id"], content, attachments)
-    print("[LOOP] SEND", (num, content, attachments))
+    db.addMsg(num, resp["result"]["message_id"], content)
+    print("[LOOP] SEND", (num, content))
 
 def deleteMsg(num:int):
     if not tgApi.deleteMessage(db.getMsgId(num)): return
@@ -58,11 +51,11 @@ def deleteMsg(num:int):
     db.deleteMsg(num)
     print("[LOOP] DELETE", num)
 
-def editMsg(num:int, msgId:int, content:str, attachments:str):
-    if not tgApi.editMessage(msgId, formatMgs(num, content, attachments)): return
+def editMsg(num:int, msgId:int, content:str):
+    if not tgApi.editMessage(msgId, f"Nuova circolare! ({num})\n\n{content}"): return
 
-    db.editMsg(num, content, attachments)
-    print("[LOOP] EDIT", (num, content, attachments))
+    db.editMsg(num, content)
+    print("[LOOP] EDIT", (num, content))
 
 
 
@@ -75,7 +68,7 @@ if __name__ == "__main__":
             res.encoding = res.apparent_encoding
             
             # Isolate and then process each row
-            rows = {r[0]: (r[1], r[2]) for r in reversed(list(processRows(
+            rows = {r[0]: r[1] for r in reversed(list(processRows(
                 res.text.split("<tbody >")[1].split("</tbody>")[0].strip()
                     .replace('<a href=""></a>', "").replace("<br>", "").replace('<td class="sopra">', "")
                     .replace("\n", "").replace("\r", "")[:-11].replace("visualizzaCircolare.php", url)
@@ -88,18 +81,17 @@ if __name__ == "__main__":
 
             # New or changed messages
             oldMessages = db.getAllMessages()
-            for num, data in rows.items():
-                content = data[0]
-                attachments = data[1]
+            for num, content in rows.items():
 
                 try: oldMsg = oldMessages[num]
                 except: # It's NEW! Send a new message and add it to the db
-                    sendMsg(num, content, attachments)
+                    sendMsg(num, content)
                     continue
 
-                # The msg content or attachments has been changed
-                if (urlSafeDifferent(oldMsg[1], content) or urlSafeDifferent(oldMsg[2], attachments)): 
-                    editMsg(num, oldMsg[0], content, attachments) # The link changes every time you reload the page. I have no words
+                # The msg content has been changed
+                if (oldMsg[1] != content and not (oldMsg[1].startswith(hrefView) and content.startswith(hrefView) and 
+                    oldMsg[1].split('=">', 1)[1] == content.split('=">', 1)[1])): # The link changes each time you reload the page. I have no words
+                    editMsg(num, oldMsg[0], content) 
         
             currentTime = perf_counter()
             print(f"[INFO] Sync completed in {str(round(currentTime - oldTime, 2)).ljust(4, '0')}s | Next sync in {CHECK_EVERY}s..")
