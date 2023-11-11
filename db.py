@@ -46,4 +46,4 @@ class Database:
 
     def getAllMessages(self):
         with closing(self.conn.cursor()) as cur:
-            return {num: (msgId, content) for num, msgId, content, _ in cur.execute("SELECT * FROM messages").fetchall()} #TODO: Remove the _
+            return {num: (msgId, content) for num, msgId, content in cur.execute("SELECT * FROM messages").fetchall()}
