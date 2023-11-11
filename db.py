@@ -23,16 +23,16 @@ class Database:
 
 
 
-    def addMsg(self, num:int, msgId:int, content:str):
-        self.runQuery("INSERT INTO messages (num, msgId, content) values (?, ?, ?)", num, msgId, content)
+    def addMsg(self, num:int, msgId:int, content:str, attachments:str):
+        self.runQuery("INSERT INTO messages (num, msgId, content, attachments) values (?, ?, ?, ?)", num, msgId, content, attachments)
         return self
 
     def deleteMsg(self, num:int):
         self.runQuery("DELETE FROM messages WHERE num = ?", (num, ))
         return self
     
-    def editMsg(self, num:int, content:str):
-        self.runQuery("UPDATE messages SET content = ? WHERE num = ?", content, num)
+    def editMsg(self, num:int, content:str, attachments:str):
+        self.runQuery("UPDATE messages SET content = ?, attachments = ? WHERE num = ?", content, num, attachments)
         return self
 
 
@@ -46,4 +46,4 @@ class Database:
 
     def getAllMessages(self):
         with closing(self.conn.cursor()) as cur:
-            return {num: (msgId, content) for num, msgId, content in cur.execute("SELECT * FROM messages").fetchall()}
+            return {num: (msgId, content, attachments) for num, msgId, content, attachments in cur.execute("SELECT * FROM messages").fetchall()}
