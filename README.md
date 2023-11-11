@@ -2,6 +2,7 @@
 This is a simple program to scan for updates on a very specific website, that i won't talk about, and sync them with a Telegram channel
 
 ## Todos:
+- Add attachments to both the message and the db (and also check them), but ONLY if there is both a link
 - Make the whole think async. Not really necessary, just a nice addiction to have
 
 ## Updates over v1
