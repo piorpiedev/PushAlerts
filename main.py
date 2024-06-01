@@ -1,6 +1,6 @@
 from requests import get
 from requests.exceptions import ConnectionError
-from conf import BASE_URL, CHECK_EVERY
+from conf import BASE_URL, CHECK_EVERY, LOGGING_LEVEL
 import tgApi
 from db import Database
 from time import sleep, perf_counter
@@ -11,7 +11,7 @@ url = BASE_URL + "/visualizzaCircolare.php"
 baseHref = '<a href="'
 href = baseHref + BASE_URL + "/"
 hrefView = baseHref + url
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="[%H:%M:%S]")
+logging.basicConfig(level=LOGGING_LEVEL, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="[%H:%M:%S]")
 
 def isUrl(s:str):
     return s.startswith("http://") or s.startswith("https://")
