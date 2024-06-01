@@ -28,7 +28,7 @@ class Database:
         return self
 
     def deleteMsg(self, num:int):
-        self.runQuery("DELETE FROM messages WHERE num = ?", (num, ))
+        self.runQuery("DELETE FROM messages WHERE num = ?", num)
         return self
     
     def editMsg(self, num:int, content:str):
@@ -38,7 +38,7 @@ class Database:
 
     def getMsgId(self, num:int):
         with closing(self.conn.cursor()) as cur:
-            return cur.execute("SELECT msgId FROM messages WHERE num = ?", (num, )).fetchone()
+            return cur.execute("SELECT msgId FROM messages WHERE num = ?", (num, )).fetchone()[0]
     
     def getAllNums(self):
         with closing(self.conn.cursor()) as cur:
