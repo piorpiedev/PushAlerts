@@ -1,5 +1,6 @@
 # PushAlerts
 This is a simple program to scan for updates on a very specific website, and sync them with a Telegram channel
+IMPORTANT: As of right now, Telegram DOESN'T allow bots to delete messages older than 24 hours
 
 ## Todos:
 - Send a message in the channel when another msg has been updated (EDIT event), and delete it after an x amount of time (or when it gets edited once again)
