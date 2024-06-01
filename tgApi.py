@@ -26,12 +26,12 @@ def checkResp(func, args:tuple, scope:str, info:str):
                     sleep(time)
                     continue
                 else: 
-                    logging.error("Unable to", scope, info)
+                    logging.error(f"Unable to {scope} {info}")
                     return False
             else: 
                 return resp
         except: 
-            logging.error("Unable to", scope, info)
+            logging.error(f"Unable to {scope} {info}")
             return False
 
 
